@@ -7,16 +7,11 @@ import java.util.*;
 
 public class Main {
 	
-	private static final File DATA_FOLDER;
 	private static final File DATA_RAW;
 	
 	static {
 		try {
-			DATA_FOLDER = new File(new File(Main.class.getProtectionDomain().getCodeSource().getLocation()
-					.toURI().getPath()).getParent(), "data");
-			if (!DATA_FOLDER.exists())
-				DATA_FOLDER.mkdirs();
-			DATA_RAW = new File(DATA_FOLDER, "raw");
+			DATA_RAW = new File(CLIUtils.DATA_FOLDER, "raw");
 			if (!DATA_RAW.exists())
 				DATA_RAW.mkdirs();
 		} catch(Exception e) {
@@ -61,9 +56,14 @@ public class Main {
 		} catch (IOException e) {
 			System.out.println("Failed to parse samples file: " + e.getLocalizedMessage());
 		}
-		
+		SampleSet set = new SampleSet("firefox", samples.get("firefox"));
+		for (Sample s : set) {
+			System.out.println(SampleUtils.toCSVString(s));
+		}
+		System.out.println("Mean:");
+		System.out.println(SampleUtils.toCSVString(set.meta().meanSample()));
 		if (samples != null && !samples.isEmpty() && CLIUtils.determineShouldSave(in)) {
-			File directory = CLIUtils.createSampleDirectory(in, DATA_FOLDER, start);
+			File directory = CLIUtils.createSampleDirectory(in, CLIUtils.DATA_FOLDER, start);
 			for (Map.Entry<String, List<Sample>> entry : samples.entrySet()) {
 				File output = CLIUtils.createSampleFile(directory, entry.getKey());
 				try (FileWriter writer = new FileWriter(output)) {
