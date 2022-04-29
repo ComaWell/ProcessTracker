@@ -56,12 +56,6 @@ public class Main {
 		} catch (IOException e) {
 			System.out.println("Failed to parse samples file: " + e.getLocalizedMessage());
 		}
-		SampleSet set = new SampleSet("firefox", samples.get("firefox"));
-		for (Sample s : set) {
-			System.out.println(SampleUtils.toCSVString(s));
-		}
-		System.out.println("Mean:");
-		System.out.println(SampleUtils.toCSVString(set.meta().meanSample()));
 		if (samples != null && !samples.isEmpty() && CLIUtils.determineShouldSave(in)) {
 			File directory = CLIUtils.createSampleDirectory(in, CLIUtils.DATA_FOLDER, start);
 			for (Map.Entry<String, List<Sample>> entry : samples.entrySet()) {
